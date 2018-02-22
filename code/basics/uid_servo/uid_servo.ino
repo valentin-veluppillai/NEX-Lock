@@ -39,18 +39,9 @@ void loop() {
   dump_byte_array(mfrc522.uid.uidByte, mfrc522.uid.size);
 
   if(arrayCompareByte(uid, mfrc522.uid.uidByte)){
-    attachInterrupt(digitalPinToInterrupt(keyAvailablePin), readInput, RISING);
-    while(inputIndex != 4);
-    detachInterrupt(digitalPinToInterrupt(keyAvailablePin));
-    inputIndex = 0;
-    if (arrayCompareInt(input, pin, 4)) {
-      servo.write(opos);
-      delay(5000);
-      servo.write(cpos);
-    }
-    else{
-      Serial.println("WRONG");
-    }
+    servo.write(opos);
+    delay(5000);
+    servo.write(cpos);
   }
   else
     Serial.println("UNKNOWN");
@@ -71,40 +62,4 @@ bool arrayCompareByte(byte* a, byte* b){
       return false;
   }
  return true;
-}
-
-bool arrayCompareInt(int* a, int* b, int len){
-  for(int i = 0; i < len; i++){
-    if(a[i] != b[i])
-      return false;
-  }
- return true;
-}
-
-void readInput(){
-  int i = 0;
-  int temp = 0;
-  temp += digitalRead(keyEncoderPin[i++]);
-  temp += digitalRead(keyEncoderPin[i++]) * 2;
-  temp += digitalRead(keyEncoderPin[i++]) * 4;
-  temp += digitalRead(keyEncoderPin[i++]) * 8;
-  switch (temp) {
-    case 0:  input[inputIndex++] = 1; break;
-    case 1:  input[inputIndex++] = 2; break;
-    case 2:  input[inputIndex++] = 3; break;
-    case 3:  input[inputIndex++] = 'A'; break;
-    case 4:  input[inputIndex++] = 4; break;
-    case 5:  input[inputIndex++] = 5; break;
-    case 6:  input[inputIndex++] = 6; break;
-    case 7:  input[inputIndex++] = 'B'; break;
-    case 8:  input[inputIndex++] = 7; break;
-    case 9:  input[inputIndex++] = 8; break;
-    case 10: input[inputIndex++] = 9; break;
-    case 11: input[inputIndex++] = 'C'; break;
-    case 12: input[inputIndex++] = '*'; break;
-    case 13: input[inputIndex++] = 0; break;
-    case 14: input[inputIndex++] = '#'; break;
-    case 15: input[inputIndex++] = 'D'; break;
-    default: break;
-  }
 }
