@@ -2,6 +2,11 @@
 This is the same as uid_servo, but with added PIN functionality. Anytime the
 correct UID is detected, the Arduino waits for a PIN entered via the matrix
 keypad.
+## v0.3 [28.2.18]
+* added manual unlock button
+* moved servo from pin 3 to pin 6 (needed to freee up pin 3 for interrupt)
+* cleaned up code a bunch
+
 ## v0.2 [22.2.18]
 * added support for multiple UIDs/PINs
 * fixed bug: every pin working with every uid

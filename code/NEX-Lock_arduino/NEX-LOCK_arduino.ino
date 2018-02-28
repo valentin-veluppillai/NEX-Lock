@@ -6,12 +6,14 @@
 
 #define RST_PIN 9          // Configurable, see typical pin layout above
 #define SS_PIN 10         // Configurable, take a unused pin, only HIGH/LOW required, must be diffrent to SS 2
+#define keyAvailablePin 2
+#define servoPin 6
+#define opos 180   // open servo position
+#define cpos  150   //closed servo position
+#define extButtonSupplyPin 4
+#define extButtonPin 3
 
 const int keyEncoderPin[4] = {A0, A1, A2, A3};
-const int keyAvailablePin = 2;
-const int servoPin = 3;
-const int opos = 180;   // open servo position
-const int cpos = 150;   //closed servo position
 const int pin[] = {4529};
 const int pinAmount = 1;
 const byte uid[][UIDLEN] = {{62, 164, 176, 137}};
@@ -21,6 +23,7 @@ volatile int input[4];
 volatile int inputIndex = 0;
 int uidIndex;
 bool uidCheck;
+volatile int doorCounter;
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 Servo servo;
@@ -32,6 +35,7 @@ void setup() {
   mfrc522.PCD_Init();
   mfrc522.PCD_DumpVersionToSerial();
   servo.attach(3);
+  attachInterrupt(digitalPinToInterrupt(extButtonPin), isrToggleDoor, RISING);
 }
 
 void loop() {
@@ -114,5 +118,16 @@ void readInput(){
     case 14: input[inputIndex++] = '#'; break;
     case 15: input[inputIndex++] = 'D'; break;
     default: break;
+  }
+}
+
+void isrToggleDoor(){
+  if(((doorCounter++)%2) == 0){
+    servo.write(opos);
+    digitalWirte(extButtonSupplyPin, HIGH);
+  }
+  else{
+    servo.write(opos);
+    digitalWrite(extButtonSupplyPin, LOW);
   }
 }
